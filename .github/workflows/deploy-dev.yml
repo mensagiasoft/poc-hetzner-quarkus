@@ -46,8 +46,6 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
 
           script: |
-            cd /opt/apps/mi-app
-
-            docker compose down
-
-            docker compose up -d --build
+            cd /opt/apps/mi-app-quarkus
+            docker-compose down
+            docker-compose up -d --build

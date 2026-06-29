@@ -7,11 +7,12 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 @Path("/hello")
-public class GreetingResource {
+public class HelloResource {
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/{name}")
+    @Produces("text/plain")
     public String hello(@PathParam("name") String name) {
-        return "Hello from Quarkus REST " + name;
+        return "Hola " + name;
     }
 }

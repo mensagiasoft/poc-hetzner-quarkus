@@ -1,7 +1,0 @@
-quarkus:
-  application:
-    name: quarkus
-
-  http:
-    port: 8082
-    host: 0.0.0.0

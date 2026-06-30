@@ -17,7 +17,7 @@ public class WhatsappResource {
     @POST
     public String send(WhatsappRequest request) {
 
-        producer.sendKafka(request.getPhoneNumber(), request.getMessage());
+        producer.sendKafka(request);
 
         return "Sent Message: " + request.getMessage();
     }

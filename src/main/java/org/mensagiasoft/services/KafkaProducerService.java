@@ -2,12 +2,16 @@ package org.mensagiasoft.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import io.smallrye.reactive.messaging.kafka.KafkaRecord;
+import org.eclipse.microprofile.reactive.messaging.Message;
+
+import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
+
 import org.mensagiasoft.dto.WhatsappRequest;
 
 @ApplicationScoped
@@ -18,24 +22,26 @@ public class KafkaProducerService {
 
     @Inject
     @Channel("whatsapp-out")
-    Emitter<KafkaRecord<String, String>> emitter;
+    Emitter<String> emitter;
 
     public void sendKafka(WhatsappRequest request) {
-
         try {
-
             String json = objectMapper.writeValueAsString(request);
 
-            KafkaRecord<String, String> record =
-                    KafkaRecord.of(request.getPhoneNumber(), json);
+            OutgoingKafkaRecordMetadata<String> metadata =
+                    OutgoingKafkaRecordMetadata.<String>builder()
+                            .withKey(request.getPhoneNumber())
+                            .build();
 
-            emitter.send(record);
+            Message<String> message = Message.of(json)
+                    .addMetadata(metadata);
+
+            emitter.send(message);
 
         } catch (JsonProcessingException e) {
-
             throw new RuntimeException("Error serializing the message", e);
-
         }
 
     }
+
 }

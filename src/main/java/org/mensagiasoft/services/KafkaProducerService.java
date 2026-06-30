@@ -5,18 +5,18 @@ import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.eclipse.microprofile.reactive.messaging.Message;
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;
+import org.mensagiasoft.dto.WhatsappRequest;
 
 @ApplicationScoped
 public class KafkaProducerService {
 
     @Inject
     @Channel("whatsapp-out")
-    Emitter<Message<String>> emitter;
+    Emitter<KafkaRecord<String, WhatsappRequest>> emitter;
 
-    public void sendKafka(String phoneNumber, String message) {
-
-        emitter.send(KafkaRecord.of(phoneNumber, message));
+    public void sendKafka(WhatsappRequest request) {
+        KafkaRecord<String, WhatsappRequest> record = KafkaRecord.of(request.getPhoneNumber(), request);
+        emitter.send(record);
     }
 }
